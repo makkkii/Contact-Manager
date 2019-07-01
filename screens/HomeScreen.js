@@ -15,9 +15,75 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: "Contact App"
   }
+
+  componentWillMount() {
+    const {navigation} = this.props;
+    navigation.addListener("willFocus", () => {
+      this.getAllContacts();
+    })
+  }
+
+  //TODO: get all contacts
+
+  getAllContacts = async () => {
+    await AsyncStorage.getAllKeys()
+      .then( keys => {
+        // console.log(keys)
+        return AsyncStorage.multiGet(keys)
+          .then( result => {
+            this.setState({
+              data: result.sort(function(a, b) {
+                if (JSON.parse(a[1]).fname < JSON.parse(b[1]).fname) { return -1; }
+                if (JSON.parse(a[1]).fname > JSON.parse(b[1]).fname) { return  1; }
+                return 0; 
+              })
+            })
+          })
+          .catch( error => {
+            console.log(error)
+          })
+      })
+      .catch(error => {
+        console.log(error)
+      });
+      // console.log(this.state.data)
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <FlatList 
+          data={this.state.data}
+          renderItem={ ({ item }) => {
+            contact = JSON.parse(item[1]);
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("View", {
+                    key: item[0].toString()
+                  })
+                }}
+              >
+                <Card style={styles.listItem}>
+                  <View style={styles.iconContainer}>
+                    <Text style={styles.contactIcon}>
+                      {contact.fname[0].toUpperCase()}
+                    </Text>
+                  </View>
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.infoText}>
+                      {contact.fname} {contact.lname}
+                    </Text> 
+                    <Text style={styles.infoText}>
+                      {contact.phone}
+                    </Text>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            )
+          }}
+          keyExtractor={(item, index) => item[0].toString()}
+        />
         <TouchableOpacity 
           onPress={() => {
             this.props.navigation.navigate("Add")

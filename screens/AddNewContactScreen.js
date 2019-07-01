@@ -6,8 +6,8 @@ import {
   Alert, 
   Keyboard, 
   AsyncStorage, 
-  TouchableWithoutFeedback, 
-  ScrollView 
+  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native';
 
 import { 
@@ -53,7 +53,7 @@ export default class AddNewContactScreen extends React.Component {
       await AsyncStorage.setItem(Date.now().toString(),
         JSON.stringify(contact)
       ).then(() => {
-        this.props.navigation.goBack();
+        this.props.navigation.goBack(); 
       })
        .catch( error => {
          console.log(error)
@@ -65,9 +65,63 @@ export default class AddNewContactScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Add new contact!</Text>
-      </View>
+      <TouchableWithoutFeedback
+      onPress={() => Keyboard.dismiss}>
+        <ScrollView 
+        style={styles.container}>
+          <Form>
+            <Item style={styles.inputItem}>
+              <Label>First Name</Label>
+              <Input
+                autoCorrect={false}
+                keyboardType="default"
+                onChangeText={ fname => this.setState({ fname })}
+              />
+            </Item>
+            <Item style={styles.inputItem}>
+              <Label>Last Name</Label>
+              <Input
+                autoCorrect={false}
+                keyboardType="default"
+                onChangeText={ lname => this.setState({ lname })}
+              />
+            </Item>
+            <Item style={styles.inputItem}>
+              <Label>Phone</Label>
+              <Input
+                autoCorrect={false}
+                keyboardType="number-pad"
+                onChangeText={ phone => this.setState({ phone })}
+              />
+            </Item>
+            <Item style={styles.inputItem}>
+              <Label>Email</Label>
+              <Input
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onChangeText={ email => this.setState({ email })}
+              />
+            </Item>
+            <Item style={styles.inputItem}>
+              <Label>Address</Label>
+              <Input
+                autoCorrect={false}
+                keyboardType="default"
+                onChangeText={ address => this.setState({ address })}
+              />
+            </Item>
+          </Form>
+          <Button 
+            style={styles.button}
+            full
+            onPress={() => {
+              this.saveContact();
+            }}
+          ><Text style={styles.buttonText}>Save</Text></Button>
+          <View style={styles.empty}></View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -75,8 +129,24 @@ export default class AddNewContactScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    margin: 10,
+    height: 500
   },
+  inputItem: {
+    margin: 10
+  },
+  button: {
+    backgroundColor: "#0a3d62",
+    marginTop: 40,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold"
+  },
+  empty: {
+    height: 500,
+    backgroundColor: "#FFF"
+  }
 });
