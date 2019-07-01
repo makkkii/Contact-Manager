@@ -26,7 +26,7 @@ export default class ViewContactScreen extends React.Component {
     }
   }
 
-  static navigatioOptions = {
+  static navigationOptions = {
     title: "View Contact"
   }
 
